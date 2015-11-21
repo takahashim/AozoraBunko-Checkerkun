@@ -1,6 +1,6 @@
 # NAME
 
-AozoraBunko::Tools::Checkerkun - It's new $module
+AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チェッカー（作：結城浩）をライブラリ化したもの
 
 # SYNOPSIS
 
@@ -8,7 +8,7 @@ AozoraBunko::Tools::Checkerkun - It's new $module
 
 # DESCRIPTION
 
-AozoraBunko::Tools::Checkerkun is ...
+AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チェッカーで、結城浩が作成したツールを私がライブラリ化したものです。
 
 # LICENSE
 

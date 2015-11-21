@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "青空文庫の工作員のための文字チェッカー（作：結城浩）をライブラリ化したもの",
    "author" : [
       "pawa <pawa@pawafuru.com>"
    ],
@@ -45,7 +45,7 @@
             "Carp" : "0",
             "Exporter" : "0",
             "File::ShareDir" : "0",
-            "YAML" : "1.15",
+            "YAML::Tiny" : "1.69",
             "perl" : "5.008001"
          }
       },

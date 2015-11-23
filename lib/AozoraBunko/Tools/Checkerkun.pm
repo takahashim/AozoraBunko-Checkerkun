@@ -257,7 +257,7 @@ AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チ�
 
 =head2 $checked_text = $checker->check($text)
 
-new で指定したオプションでテキストをチェックします。戻り値はチェックされたテキストです。
+new で指定したオプションでテキストをチェックします。戻り値はチェック済みのテキストです。
 
 =head1 LICENSE
 

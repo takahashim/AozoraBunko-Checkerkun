@@ -39,7 +39,7 @@ AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チ�
 
 ## $checked\_text = $checker->check($text)
 
-new で指定したオプションでテキストをチェックします。戻り値はチェックされたテキストです。
+new で指定したオプションでテキストをチェックします。戻り値はチェック済みのテキストです。
 
 # LICENSE
 

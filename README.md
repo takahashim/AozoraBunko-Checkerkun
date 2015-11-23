@@ -5,6 +5,10 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
 # SYNOPSIS
 
     use AozoraBunko::Tools::Checkerkun;
+    use utf8;
+
+    my $checker = AozoraBunko::Tools::Checkerun->new(\%options);
+    $checker->check('森鷗外');
 
 # DESCRIPTION
 

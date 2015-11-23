@@ -6,6 +6,7 @@ use strict;
 use warnings;
 use utf8;
 
+use Carp           qw//;
 use File::ShareDir qw//;
 use YAML::Tiny     qw//;
 
@@ -36,12 +37,48 @@ our $GONIN2 = $YAML->{'gonin2'};
 # （砂場清隆さんの入力による）
 our $GONIN3 = $YAML->{'gonin3'};
 
+sub _default_option
+{
+    return {
+        gaiji              => 1, # JIS外字をチェックする
+        hansp              => 1, # 半角スペースをチェックする
+        hanpar             => 1, # 半角カッコなどの記号をチェックする
+        zensp              => 0, # 全角スペースをチェックする
+        '78hosetsu_tekiyo' => 1, # 78互換包摂の対象となる不要な外字注記をチェックする
+        hosetsu_tekiyo     => 1, # 包摂の対象となる不要な外字注記をチェックする
+        78                 => 0, # 78互換包摂29字をチェックする
+        jyogai             => 0, # 新JIS漢字で包摂規準の適用除外となる104字をチェックする
+        gonin1             => 0, # 誤認しやすい文字をチェックする(1)
+        gonin2             => 0, # 誤認しやすい文字をチェックする(2)
+        gonin3             => 0, # 誤認しやすい文字をチェックする(3)
+        simplesp           => 0, # 半角スペースは赤文字 _で、全角スペースは赤文字□で出力する
+        pre                => 0, # 入力した通りに改行して出力する
+        bold               => 0, # 太字も用いて出力する
+    };
+}
+
+sub new
+{
+    my $class = shift;
+    my %args  = (ref $_[0] eq 'HASH' ? %{$_[0]} : @_);
+
+    my $options = $class->_default_options;
+
+    for my $key (keys %args)
+    {
+        if ( ! exists $options->{$key} ) { Carp::croak "Unknown option: '$key'";  }
+        else                             { $options->{$key} = $args{$key};        }
+    }
+
+    bless $options, $class;
+}
+
 # 例：
 # ［＃「口＋亞」、第3水準1-15-8、144-上-9］
 # が
 # ［＃「口＋亞」、第3水準1-15-8、144-上-9］ → [78hosetsu_tekiyo]【唖】
 # に変換される。
-sub check_78hosetsu_tekiyo
+sub _check_78hosetsu_tekiyo
 {
     my ($text) = @_;
 
@@ -67,7 +104,7 @@ sub check_78hosetsu_tekiyo
 # が
 #［＃「にんべん＋曾」、第3水準1-14-41、144-上-9］→[hosetsu_tekiyo]【僧】
 # に変換される。
-sub check_hosetsu_tekiyo
+sub _check_hosetsu_tekiyo
 {
     my ($text) = @_;
 
@@ -88,7 +125,7 @@ sub check_hosetsu_tekiyo
     return $replace;
 }
 
-sub is_gaiji
+sub _is_gaiji
 {
     my $val = shift;
 
@@ -138,7 +175,7 @@ sub is_gaiji
 
 sub check
 {
-    my ($text) = @_;
+    my ($self, $text) = @_;
 
     my $state;
 
@@ -146,7 +183,7 @@ sub check
 
     for my $char (@chars)
     {
-        my $replace = check_78hosetsu_tekiyo($text);
+        return if _is_gaiji($char);
     }
 }
 
@@ -162,7 +199,12 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
 
 =head1 SYNOPSIS
 
-    use AozoraBunko::Tools::Checkerkun;
+  use AozoraBunko::Tools::Checkerkun;
+  use utf8;
+
+  my $checker = AozoraBunko::Tools::Checkerun->new(\%options);
+  $checker->check('森鷗外');
+
 
 =head1 DESCRIPTION
 

@@ -8,4 +8,5 @@ requires 'Lingua::JA::Halfwidth::Katakana';
 
 on 'test' => sub {
     requires 'Test::More', '>= 0.98';
+    requires 'Test::Fatal';
 };

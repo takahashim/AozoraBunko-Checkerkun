@@ -168,8 +168,8 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
   use AozoraBunko::Tools::Checkerkun;
   use utf8;
 
-  my $checker = AozoraBunko::Tools::Checkerun->new(\%options);
-  $checker->check('森鷗外');
+  my $checker = AozoraBunko::Tools::Checkerkun->new();
+  $checker->check('森鷗［＃「區＋鳥」、第3水準1-94-69］外');
 
 
 =head1 DESCRIPTION

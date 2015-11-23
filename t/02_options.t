@@ -210,14 +210,21 @@ subtest 'simplesp, hansp & zensp' => sub {
 subtest 'gaiji, 78hosetsu_tekiyo & hosetsu_tekiyo' => sub {
     my %opts = %option;
 
-    my $text = '鷗※［＃「區＋鳥」、第3水準1-94-69］既※［＃「漑－さんずい」、第3水準1-85-11］' x 2;
+    my $text = '鷗※［＃「區＋鳥」、第3水準1-94-69］既※［＃「漑－さんずい」、第3水準1-85-11］' x 1000;
 
     $opts{'gaiji'}            = 1;
     $opts{'78hosetsu_tekiyo'} = 1;
     $opts{'hosetsu_tekiyo'}   = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '鷗 [gaiji]【鷗】 ※［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 既 [gaiji]【既】 ※［＃「漑－さんずい」、第3水準1-85-11］ → [hosetsu_tekiyo]【既】 ' x 2);
+    is($checker2->check($text), '鷗 [gaiji]【鷗】 ※［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 既 [gaiji]【既】 ※［＃「漑－さんずい」、第3水準1-85-11］ → [hosetsu_tekiyo]【既】 ' x 1000);
+};
+
+subtest 'hash size' => sub {
+    is(scalar keys %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}, 29);
+    is(scalar keys %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_HOSETSU_TEKIYO},   104);
+    is(scalar keys %{$AozoraBunko::Tools::Checkerkun::JYOGAI},                    104);
+    is(scalar keys %{$AozoraBunko::Tools::Checkerkun::J78},                       29);
 };
 
 done_testing;

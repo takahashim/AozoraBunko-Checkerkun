@@ -8,7 +8,7 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
     use utf8;
 
     my $checker = AozoraBunko::Tools::Checkerkun->new();
-    $checker->check('森鴎［＃「區＋鳥」、第3水準1-94-69］外💓'); # => '森鴎［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 外💓 [gaiji]【💓】 '
+    $checker->check('森鴎※［＃「區＋鳥」、第3水準1-94-69］外💓'); # => '森鴎※［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 外💓 [gaiji]【💓】 '
 
 # DESCRIPTION
 

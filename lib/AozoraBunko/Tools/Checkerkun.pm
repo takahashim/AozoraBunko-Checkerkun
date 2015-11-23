@@ -95,7 +95,7 @@ sub _check_all_hosetsu_tekiyo
     my $rear_index = $index + 80;
     $rear_index = $#{$chars_ref} if $rear_index > $#{$chars_ref};
 
-    if ( join("", @{$chars_ref}[$index .. $rear_index]) =~ /^［(＃.*?水準(\d+\-\d+\-\d+).*?］)/ )
+    if ( join("", @{$chars_ref}[$index .. $rear_index]) =~ /^(［＃.*?水準(\d+\-\d+\-\d+).*?］)/ )
     {
         my $match    = $1;
         my $kutenmen = $2;
@@ -167,9 +167,9 @@ sub check
         {
             $checked_text .= " [hanpar]【$char】 ";
         }
-        elsif ( $char eq '［' && ($self->{'78hosetsu_tekiyo'} || $self->{'hosetsu_tekiyo'}) )
+        elsif ( $char eq '※' && ($self->{'78hosetsu_tekiyo'} || $self->{'hosetsu_tekiyo'}) )
         {
-            my ($replace, $usedlen) = $self->_check_all_hosetsu_tekiyo(\@chars, $i);
+            my ($replace, $usedlen) = $self->_check_all_hosetsu_tekiyo(\@chars, $i + 1);
 
             if ($replace)
             {
@@ -225,7 +225,7 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
   use utf8;
 
   my $checker = AozoraBunko::Tools::Checkerkun->new();
-  $checker->check('森鴎［＃「區＋鳥」、第3水準1-94-69］外💓'); # => '森鴎［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 外💓 [gaiji]【💓】 '
+  $checker->check('森鴎※［＃「區＋鳥」、第3水準1-94-69］外💓'); # => '森鴎※［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 外💓 [gaiji]【💓】 '
 
 
 =head1 DESCRIPTION

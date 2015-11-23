@@ -9,9 +9,11 @@ use utf8;
 use Carp           qw//;
 use File::ShareDir qw//;
 use YAML::Tiny     qw//;
+use Encode         qw//;
 
 my $YAML_FILE = File::ShareDir::dist_file('AozoraBunko-Tools-Checkerkun', 'hiden_no_tare.yml');
 my $YAML = YAML::Tiny->read($YAML_FILE)->[0];
+my $ENC = Encode::find_encoding("Shift_JIS");
 
 # [78hosetsu_tekiyo] 78互換包摂の対象となる不要な外字注記をチェックする
 our $KUTENMEN_78HOSETSU_TEKIYO = $YAML->{'kutenmen_78hosetsu_tekiyo'};
@@ -37,7 +39,7 @@ our $GONIN2 = $YAML->{'gonin2'};
 # （砂場清隆さんの入力による）
 our $GONIN3 = $YAML->{'gonin3'};
 
-sub _default_option
+sub _default_options
 {
     return {
         gaiji              => 1, # JIS外字をチェックする
@@ -82,9 +84,9 @@ sub _check_78hosetsu_tekiyo
 {
     my ($text) = @_;
 
-    my $replace = '';
+    my $replace = $text;
 
-    if ($text =~ m|^［＃.*?水準(¥d+¥-¥d+¥-¥d+).*?］|)
+    if ($text =~ /［＃.*?水準(\d+\-\d+\-\d+).*?］/)
     {
         my $kutenmen = $1;
         my $match    = $&;
@@ -110,7 +112,7 @@ sub _check_hosetsu_tekiyo
 
     my $replace = '';
 
-    if ($text =~ m|^［＃.*?水準(¥d+¥-¥d+¥-¥d+).*?］|)
+    if ($text =~ m|［＃.*?水準(\d+\-\d+\-\d+).*?］|)
     {
         my $kutenmen = $1;
         my $match    = $&;
@@ -127,49 +129,9 @@ sub _check_hosetsu_tekiyo
 
 sub _is_gaiji
 {
-    my $val = shift;
-
-    # UTF-8からSJISに変換できなければ外字と判定するように修正する
-
-    return 1
-      if 0x81AD <= $val && $val <= 0x81B7 ||
-         0x81C0 <= $val && $val <= 0x81C7 ||
-         0x81CF <= $val && $val <= 0x81D9 ||
-         0x81E9 <= $val && $val <= 0x81EF ||
-         0x81F8 <= $val && $val <= 0x81FB ||
-         0x8240 <= $val && $val <= 0x824E ||
-         0x8259 <= $val && $val <= 0x825F ||
-         0x827A <= $val && $val <= 0x8280 ||
-         0x829B <= $val && $val <= 0x829E ||
-         0x82F2 <= $val && $val <= 0x82FC ||
-         0x8397 <= $val && $val <= 0x839E ||
-         0x83B7 <= $val && $val <= 0x83BE ||
-         0x83D7 <= $val && $val <= 0x83FC ||
-         0x8461 <= $val && $val <= 0x846F ||
-         0x8492 <= $val && $val <= 0x849E ||
-         0x84BF <= $val && $val <= 0x84FC ||
-         0x8540 <= $val && $val <= 0x859E ||
-         0x859F <= $val && $val <= 0x85FC ||
-         0x8640 <= $val && $val <= 0x869E ||
-         0x869F <= $val && $val <= 0x86FC ||
-         0x8740 <= $val && $val <= 0x879E ||
-         0x879F <= $val && $val <= 0x87FC ||
-         0x8840 <= $val && $val <= 0x889E ||
-         0x9873 <= $val && $val <= 0x989E ||
-         0xEAA5 <= $val && $val <= 0xEAFC ||
-         0xEB40 <= $val && $val <= 0xEB9E ||
-         0xEB9F <= $val && $val <= 0xEBFC ||
-         0xEC40 <= $val && $val <= 0xEC9E ||
-         0xEC9F <= $val && $val <= 0xECFC ||
-         0xED40 <= $val && $val <= 0xED9E ||
-         0xED9F <= $val && $val <= 0xEDFC ||
-         0xEE40 <= $val && $val <= 0xEE9E ||
-         0xEE9F <= $val && $val <= 0xEEFC ||
-         0xEF40 <= $val && $val <= 0xEF9E ||
-         0xEF9F <= $val && $val <= 0xEFFC ||
-         0xF040 <= $val && $val <= 0xFCFC # Extra
-    ;
-
+    # UTF-8からSJISに変換できなければ外字と判定
+    eval { $ENC->encode($_[0], Encode::FB_CROAK) };
+    return 1 if $@;
     return 0;
 }
 
@@ -177,14 +139,18 @@ sub check
 {
     my ($self, $text) = @_;
 
-    my $state;
+    my ($state, $checked_text);
 
     my @chars = split(//, $text);
 
     for my $char (@chars)
     {
-        return if _is_gaiji($char);
+        $checked_text .= $char;
+        $checked_text .= " [gaiji]【$char】 " if $self->{'gaiji'}  && _is_gaiji($char);
     }
+
+    return $checked_text;
+    return _check_78hosetsu_tekiyo($text);
 }
 
 1;

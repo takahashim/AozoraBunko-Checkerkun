@@ -128,13 +128,21 @@ sub check
 {
     my ($self, $text) = @_;
 
+    return undef unless defined $text;
+
     my @chars = split(//, $text);
 
-    my $checked_text;
+    my $checked_text = '';
 
     for (my $i = 0; $i < @chars; $i++)
     {
         my $char = $chars[$i];
+
+        if ($self->{simplesp})
+        {
+            $char = '_'  if $char eq "\x{0020}";
+            $char = '□' if $char eq "\x{3000}";
+        }
 
         $checked_text .= $char;
 
@@ -147,15 +155,13 @@ sub check
         {
             $checked_text .= " [hankata]【$char】 ";
         }
-        elsif ($char =~ "\x{0020}")
+        elsif ($self->{'hansp'} && $char =~ "\x{0020}")
         {
-            $char = '_'                           if $self->{'simplesp'};
-            $checked_text .= " [hansp]【$char】 " if $self->{'hansp'};
+            $checked_text .= " [hansp]【$char】 ";
         }
-        elsif ($char eq "\x{3000}")
+        elsif ($self->{'zensp'} && $char eq "\x{3000}")
         {
-            $char = '□'                          if $self->{'simplesp'};
-            $checked_text .= " [zensp]【$char】 " if $self->{'zensp'};
+            $checked_text .= " [zensp]【$char】 ";
         }
         elsif ( $self->{hanpar} && ($char eq '(' || $char eq ')') )
         {
@@ -180,7 +186,7 @@ sub check
             }
             elsif ($self->{'jyogai'} && $JYOGAI->{$char})
             {
-                $checked_text .= " [jyogai]【$char】（" . $JYOGAI->{$char} . "） ";
+                $checked_text .= " [jyogai]【$char】 ";
             }
             elsif ($self->{'gonin1'} && $GONIN1->{$char})
             {

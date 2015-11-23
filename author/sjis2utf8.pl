@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+# Usage: ./sjis2utf8.pl < input_filename > output_filename
+
 use strict;
 use warnings;
 use Encode qw//;

@@ -43,8 +43,9 @@
       "runtime" : {
          "requires" : {
             "Carp" : "0",
-            "Exporter" : "0",
+            "Encode" : "0",
             "File::ShareDir" : "0",
+            "Lingua::JA::Halfwidth::Katakana" : "0",
             "YAML::Tiny" : "1.69",
             "perl" : "5.008001"
          }

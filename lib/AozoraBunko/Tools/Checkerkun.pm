@@ -10,6 +10,7 @@ use Carp           qw//;
 use File::ShareDir qw//;
 use YAML::Tiny     qw//;
 use Encode         qw//;
+use Lingua::JA::Halfwidth::Katakana;
 
 my $YAML_FILE = File::ShareDir::dist_file('AozoraBunko-Tools-Checkerkun', 'hiden_no_tare.yml');
 my $YAML = YAML::Tiny->read($YAML_FILE)->[0];
@@ -44,7 +45,7 @@ sub _default_options
     return {
         gaiji              => 1, # JIS外字をチェックする
         hansp              => 1, # 半角スペースをチェックする
-        hanpar             => 1, # 半角カッコなどの記号をチェックする
+        hanpar             => 1, # 半角カッコをチェックする
         zensp              => 0, # 全角スペースをチェックする
         '78hosetsu_tekiyo' => 1, # 78互換包摂の対象となる不要な外字注記をチェックする
         hosetsu_tekiyo     => 1, # 包摂の対象となる不要な外字注記をチェックする
@@ -53,9 +54,7 @@ sub _default_options
         gonin1             => 0, # 誤認しやすい文字をチェックする(1)
         gonin2             => 0, # 誤認しやすい文字をチェックする(2)
         gonin3             => 0, # 誤認しやすい文字をチェックする(3)
-        simplesp           => 0, # 半角スペースは赤文字 _で、全角スペースは赤文字□で出力する
-        pre                => 0, # 入力した通りに改行して出力する
-        bold               => 0, # 太字も用いて出力する
+        simplesp           => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
     };
 }
 
@@ -68,63 +67,53 @@ sub new
 
     for my $key (keys %args)
     {
-        if ( ! exists $options->{$key} ) { Carp::croak "Unknown option: '$key'";  }
-        else                             { $options->{$key} = $args{$key};        }
+        if ( ! exists $options->{$key} ) { Carp::croak "Unknown option: '$key'"; }
+        else                             { $options->{$key} = $args{$key};       }
     }
 
     bless $options, $class;
 }
 
 # 例：
+#
 # ［＃「口＋亞」、第3水準1-15-8、144-上-9］
 # が
 # ［＃「口＋亞」、第3水準1-15-8、144-上-9］ → [78hosetsu_tekiyo]【唖】
-# に変換される。
-sub _check_78hosetsu_tekiyo
-{
-    my ($text) = @_;
-
-    my $replace = $text;
-
-    if ($text =~ /［＃.*?水準(\d+\-\d+\-\d+).*?］/)
-    {
-        my $kutenmen = $1;
-        my $match    = $&;
-
-        if ( exists $KUTENMEN_78HOSETSU_TEKIYO->{$kutenmen} )
-        {
-            $replace = $match . ' → [78hosetsu_tekiyo]【' . $KUTENMEN_78HOSETSU_TEKIYO->{$kutenmen} . '】';
-            #$replace = "$greenbegin$replace$greenend";
-        }
-    }
-
-    return $replace;
-}
-
-# 例：
+# に変換され、
+#
 #［＃「にんべん＋曾」、第3水準1-14-41、144-上-9］
 # が
 #［＃「にんべん＋曾」、第3水準1-14-41、144-上-9］→[hosetsu_tekiyo]【僧】
 # に変換される。
-sub _check_hosetsu_tekiyo
+#
+sub _check_all_hosetsu_tekiyo
 {
-    my ($text) = @_;
+    my ($self, $chars_ref, $index) = @_;
 
-    my $replace = '';
+    my ($replace, $usedlen);
 
-    if ($text =~ m|［＃.*?水準(\d+\-\d+\-\d+).*?］|)
+    my $rear_index = $index + 80;
+    $rear_index = $#{$chars_ref} if $rear_index > $#{$chars_ref};
+
+    if ( join("", @{$chars_ref}[$index .. $rear_index]) =~ /^［(＃.*?水準(\d+\-\d+\-\d+).*?］)/ )
     {
-        my $kutenmen = $1;
-        my $match    = $&;
+        my $match    = $1;
+        my $kutenmen = $2;
 
-        if ( exists $KUTENMEN_HOSETSU_TEKIYO->{$kutenmen} )
+        if ( $self->{'78hosetsu_tekiyo'} && exists $KUTENMEN_78HOSETSU_TEKIYO->{$kutenmen} )
         {
-            $replace = $match . ' → [hosetsu_tekiyo]【' . $KUTENMEN_HOSETSU_TEKIYO->{$kutenmen} . '】';
-            #$replace = "$greenbegin$replace$greenend";
+            $replace = $match . ' → [78hosetsu_tekiyo]【' . $KUTENMEN_78HOSETSU_TEKIYO->{$kutenmen} . '】 ';
+            $usedlen = length $match;
+        }
+        elsif ( $self->{'hosetsu_tekiyo'} && exists $KUTENMEN_HOSETSU_TEKIYO->{$kutenmen} )
+        {
+
+            $replace = $match . ' → [hosetsu_tekiyo]【' . $KUTENMEN_HOSETSU_TEKIYO->{$kutenmen} . '】 ';
+            $usedlen = length $match;
         }
     }
 
-    return $replace;
+    return ($replace, $usedlen);
 }
 
 sub _is_gaiji
@@ -139,18 +128,79 @@ sub check
 {
     my ($self, $text) = @_;
 
-    my ($state, $checked_text);
-
     my @chars = split(//, $text);
 
-    for my $char (@chars)
+    my $checked_text;
+
+    for (my $i = 0; $i < @chars; $i++)
     {
+        my $char = $chars[$i];
+
         $checked_text .= $char;
-        $checked_text .= " [gaiji]【$char】 " if $self->{'gaiji'}  && _is_gaiji($char);
+
+        if ($char =~ /[\x{0000}-\x{0009}\x{000B}\x{000C}\x{000E}-\x{001F}\x{007F}-\x{009F}]/)
+        {
+            # 改行は含まない
+            $checked_text .= " [ctrl]【" . sprintf("U+%04X", ord $char) . "】 ";
+        }
+        elsif ($char =~ /\p{InHalfwidthKatakana}/)
+        {
+            $checked_text .= " [hankata]【$char】 ";
+        }
+        elsif ($char =~ "\x{0020}")
+        {
+            $char = '_'                           if $self->{'simplesp'};
+            $checked_text .= " [hansp]【$char】 " if $self->{'hansp'};
+        }
+        elsif ($char eq "\x{3000}")
+        {
+            $char = '□'                          if $self->{'simplesp'};
+            $checked_text .= " [zensp]【$char】 " if $self->{'zensp'};
+        }
+        elsif ( $self->{hanpar} && ($char eq '(' || $char eq ')') )
+        {
+            $checked_text .= " [hanpar]【$char】 ";
+        }
+        elsif ( $char eq '［' && ($self->{'78hosetsu_tekiyo'} || $self->{'hosetsu_tekiyo'}) )
+        {
+            my ($replace, $usedlen) = $self->_check_all_hosetsu_tekiyo(\@chars, $i);
+
+            if ($replace)
+            {
+                $checked_text .= $replace;
+                $i += $usedlen;
+                next;
+            }
+        }
+        else
+        {
+            if ($self->{'78'} && $J78->{$char})
+            {
+                $checked_text .= " [78]【$char】（" . $J78->{$char} . "） ";
+            }
+            elsif ($self->{'jyogai'} && $JYOGAI->{$char})
+            {
+                $checked_text .= " [jyogai]【$char】（" . $JYOGAI->{$char} . "） ";
+            }
+            elsif ($self->{'gonin1'} && $GONIN1->{$char})
+            {
+                $checked_text .= " [gonin1]【$char】（" . $GONIN1->{$char} . "） ";
+            }
+            elsif ($self->{'gonin2'} && $GONIN2->{$char})
+            {
+                $checked_text .= " [gonin2]【$char】（" . $GONIN2->{$char} . "） ";
+            }
+            elsif ($self->{'gonin3'} && $GONIN3->{$char})
+            {
+                $checked_text .= " [gonin3]【$char】（" . $GONIN3->{$char} . "） ";
+            }
+        }
+
+        $checked_text .= " [gaiji]【$char】 " if $self->{'gaiji'} && _is_gaiji($char);
     }
 
+
     return $checked_text;
-    return _check_78hosetsu_tekiyo($text);
 }
 
 1;
@@ -169,7 +219,7 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
   use utf8;
 
   my $checker = AozoraBunko::Tools::Checkerkun->new();
-  $checker->check('森鷗［＃「區＋鳥」、第3水準1-94-69］外');
+  $checker->check('森鴎［＃「區＋鳥」、第3水準1-94-69］外💓'); # => '森鴎［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 外💓 [gaiji]【💓】 '
 
 
 =head1 DESCRIPTION

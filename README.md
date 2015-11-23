@@ -8,7 +8,7 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
 
 # DESCRIPTION
 
-AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チェッカーで、結城浩が作成したツールを私がライブラリ化したものです。
+AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チェッカーで、結城浩氏が作成したツールを私がライブラリ化したものです。
 
 # LICENSE
 

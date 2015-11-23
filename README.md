@@ -56,7 +56,7 @@ it under the same terms as Perl itself.
 
 [包摂 (文字コード) - Wikipedia](https://ja.wikipedia.org/wiki/%E5%8C%85%E6%91%82_\(%E6%96%87%E5%AD%97%E3%82%B3%E3%83%BC%E3%83%89\))
 
-[JIS漢字で包摂の扱いが変わる文字（78互換包摂）](http://www.aozora.gr.jp/newJIS-Kanji/gokan_henkou_list.html)
+[JIS漢字で包摂の扱いが変わる文字（\[78\] \[jyogai\] など）](http://www.aozora.gr.jp/newJIS-Kanji/gokan_henkou_list.html)
 
 # AUTHOR
 

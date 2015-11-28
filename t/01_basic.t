@@ -21,6 +21,7 @@ my %option = (
     'gonin2'           => 0, # 誤認しやすい文字をチェックする(2)
     'gonin3'           => 0, # 誤認しやすい文字をチェックする(3)
     'simplesp'         => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
+    'output_format'    => 'plaintext', # 'plaintext' または 'html'
 );
 
 subtest 'new method' => sub {
@@ -43,6 +44,18 @@ subtest 'new method' => sub {
 
     $exception = exception { AozoraBunko::Tools::Checkerkun->new(\%invalid_option) };
     like($exception, qr/Unknown option: 'hogehoge'/, 'invalid option hashref');
+
+    my %invalid_output_format_option = %option;
+    $invalid_output_format_option{'output_format'} = 'image';
+
+    $exception = exception { AozoraBunko::Tools::Checkerkun->new(\%invalid_output_format_option) };
+    like($exception, qr/Output format option must be 'plaintext' or 'html'/, 'invalid output format option');
+
+    my %valid_output_format_option = %option;
+    $valid_output_format_option{'output_format'} = 'html';
+
+    $exception = exception { AozoraBunko::Tools::Checkerkun->new(\%valid_output_format_option) };
+    is($exception, undef, 'valid output format option');
 };
 
 subtest 'check method' => sub {

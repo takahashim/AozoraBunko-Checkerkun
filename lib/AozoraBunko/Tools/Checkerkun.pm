@@ -16,6 +16,9 @@ my $YAML_FILE = File::ShareDir::dist_file('AozoraBunko-Tools-Checkerkun', 'hiden
 my $YAML = YAML::Tiny->read($YAML_FILE)->[0];
 my $ENC = Encode::find_encoding("Shift_JIS");
 
+my %VALID_OUTPUT_FORMAT;
+@VALID_OUTPUT_FORMAT{qw/plaintext html/} = ();
+
 # [78hosetsu_tekiyo] 78互換包摂の対象となる不要な外字注記をチェックする
 our $KUTENMEN_78HOSETSU_TEKIYO = $YAML->{'kutenmen_78hosetsu_tekiyo'};
 
@@ -55,6 +58,7 @@ sub _default_options
         'gonin2'           => 0, # 誤認しやすい文字をチェックする(2)
         'gonin3'           => 0, # 誤認しやすい文字をチェックする(3)
         'simplesp'         => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
+        'output_format'    => 'plaintext', # plaintext または html
     };
 }
 
@@ -68,10 +72,26 @@ sub new
     for my $key (keys %args)
     {
         if ( ! exists $options->{$key} ) { Carp::croak "Unknown option: '$key'"; }
-        else                             { $options->{$key} = $args{$key};       }
+        else
+        {
+            if ($key eq 'output_format')
+            {
+                Carp::croak "Output format option must be 'plaintext' or 'html'" unless exists $VALID_OUTPUT_FORMAT{ $args{$key} };
+            }
+
+            $options->{$key} = $args{$key};
+        }
     }
 
     bless $options, $class;
+}
+
+sub _tag_html
+{
+    my ($plaintext, $tag_name, $msg) = @_;
+
+    return qq|<span data-checkerkun-tag="$tag_name">$plaintext</span>| unless defined $msg;
+    return qq|<span data-checkerkun-tag="$tag_name" data-checkerkun-message="$msg">$plaintext</span>|;
 }
 
 # 例：
@@ -95,19 +115,34 @@ sub _check_all_hosetsu_tekiyo
     my $rear_index = $index + 80;
     $rear_index = $#{$chars_ref} if $rear_index > $#{$chars_ref};
 
-    if ( join("", @{$chars_ref}[$index .. $rear_index]) =~ /^(［＃.*?水準(\d+\-\d+\-\d+).*?］)/ )
+    if ( join("", @{$chars_ref}[$index .. $rear_index]) =~ /^(※［＃.*?水準(\d+\-\d+\-\d+).*?］)/ )
     {
         my ($match, $kutenmen) = ($1, $2);
 
         if ( $self->{'78hosetsu_tekiyo'} && exists $KUTENMEN_78HOSETSU_TEKIYO->{$kutenmen} )
         {
-            $replace = $match . ' → [78hosetsu_tekiyo]【' . $KUTENMEN_78HOSETSU_TEKIYO->{$kutenmen} . '】 ';
+            if ($self->{'output_format'} eq 'plaintext')
+            {
+                $replace = $match . ' → [78hosetsu_tekiyo]【' . $KUTENMEN_78HOSETSU_TEKIYO->{$kutenmen} . '】 ';
+            }
+            elsif ($self->{'output_format'} eq 'html')
+            {
+                $replace = _tag_html($match, 'j78hosetsuTekiyo', $KUTENMEN_78HOSETSU_TEKIYO->{$kutenmen});
+            }
+
             $usedlen = length $match;
         }
         elsif ( $self->{'hosetsu_tekiyo'} && exists $KUTENMEN_HOSETSU_TEKIYO->{$kutenmen} )
         {
+            if ($self->{'output_format'} eq 'plaintext')
+            {
+                $replace = $match . ' → [hosetsu_tekiyo]【' . $KUTENMEN_HOSETSU_TEKIYO->{$kutenmen} . '】 ';
+            }
+            elsif ($self->{'output_format'} eq 'html')
+            {
+                $replace = _tag_html($match, 'hosetsuTekiyo', $KUTENMEN_HOSETSU_TEKIYO->{$kutenmen});
+            }
 
-            $replace = $match . ' → [hosetsu_tekiyo]【' . $KUTENMEN_HOSETSU_TEKIYO->{$kutenmen} . '】 ';
             $usedlen = length $match;
         }
     }
@@ -117,8 +152,10 @@ sub _check_all_hosetsu_tekiyo
 
 sub _is_gaiji
 {
+    my $char = shift; # コピーしないと、encode のタイミングで元の文字が消失してしまう。
+
     # UTF-8からSJISに変換できなければ外字と判定
-    eval { $ENC->encode($_[0], Encode::FB_CROAK) };
+    eval { $ENC->encode($char, Encode::FB_CROAK) };
     return 1 if $@;
     return 0;
 }
@@ -128,6 +165,8 @@ sub check
     my ($self, $text) = @_;
 
     return undef unless defined $text;
+
+    my $output_format = $self->{'output_format'};
 
     my @chars = split(//, $text);
 
@@ -143,37 +182,71 @@ sub check
             $char = '□' if $char eq "\x{3000}";
         }
 
-        $checked_text .= $char;
-
         if ($char =~ /[\x{0000}-\x{0009}\x{000B}\x{000C}\x{000E}-\x{001F}\x{007F}-\x{009F}]/)
         {
             # 改行は含まない
-            $checked_text .= " [ctrl]【" . sprintf("U+%04X", ord $char) . "】 ";
+
+            if ($output_format eq 'plaintext')
+            {
+                $checked_text .= "$char [ctrl]【" . sprintf("U+%04X", ord $char) . "】 ";
+            }
+            elsif ($output_format eq 'html')
+            {
+                $checked_text .= _tag_html($char, 'ctrl');
+            }
         }
         elsif ($char =~ /\p{InHalfwidthKatakana}/)
         {
-            $checked_text .= " [hankata]【$char】 ";
+            if ($output_format eq 'plaintext')
+            {
+                $checked_text .= "$char [hankata]【$char】 ";
+            }
+            elsif ($output_format eq 'html')
+            {
+                $checked_text .= _tag_html($char, 'hankata');
+            }
         }
         elsif ($self->{'hansp'} && $char =~ "\x{0020}")
         {
-            $checked_text .= " [hansp]【$char】 ";
+            if ($output_format eq 'plaintext')
+            {
+                $checked_text .= "$char [hansp]【$char】 ";
+            }
+            elsif ($output_format eq 'html')
+            {
+                $checked_text .= _tag_html($char, 'hansp');
+            }
         }
         elsif ($self->{'zensp'} && $char eq "\x{3000}")
         {
-            $checked_text .= " [zensp]【$char】 ";
+            if ($output_format eq 'plaintext')
+            {
+                $checked_text .= "$char [zensp]【$char】 ";
+            }
+            elsif ($output_format eq 'html')
+            {
+                $checked_text .= _tag_html($char, 'zensp');
+            }
         }
         elsif ( $self->{hanpar} && ($char eq '(' || $char eq ')') )
         {
-            $checked_text .= " [hanpar]【$char】 ";
+            if ($output_format eq 'plaintext')
+            {
+                $checked_text .= "$char [hanpar]【$char】 ";
+            }
+            elsif ($output_format eq 'html')
+            {
+                $checked_text .= _tag_html($char, 'hanpar');
+            }
         }
         elsif ( $char eq '※' && ($self->{'78hosetsu_tekiyo'} || $self->{'hosetsu_tekiyo'}) )
         {
-            my ($replace, $usedlen) = $self->_check_all_hosetsu_tekiyo(\@chars, $i + 1);
+            my ($replace, $usedlen) = $self->_check_all_hosetsu_tekiyo(\@chars, $i);
 
             if ($replace)
             {
                 $checked_text .= $replace;
-                $i += $usedlen;
+                $i += ($usedlen - 1);
                 next;
             }
         }
@@ -181,29 +254,73 @@ sub check
         {
             if ($self->{'78'} && $J78->{$char})
             {
-                $checked_text .= " [78]【$char】（" . $J78->{$char} . "） ";
+                if ($output_format eq 'plaintext')
+                {
+                    $checked_text .= "$char [78]【$char】（" . $J78->{$char} . "） ";
+                }
+                elsif ($output_format eq 'html')
+                {
+                    $checked_text .= _tag_html($char, 'j78');
+                }
             }
             elsif ($self->{'jyogai'} && $JYOGAI->{$char})
             {
-                $checked_text .= " [jyogai]【$char】 ";
+                if ($output_format eq 'plaintext')
+                {
+                    $checked_text .= "$char [jyogai]【$char】 ";
+                }
+                elsif ($output_format eq 'html')
+                {
+                    $checked_text .= _tag_html($char, 'jyogai');
+                }
             }
             elsif ($self->{'gonin1'} && $GONIN1->{$char})
             {
-                $checked_text .= " [gonin1]【$char】（" . $GONIN1->{$char} . "） ";
+                if ($output_format eq 'plaintext')
+                {
+                    $checked_text .= "$char [gonin1]【$char】（" . $GONIN1->{$char} . "） ";
+                }
+                elsif ($output_format eq 'html')
+                {
+                    $checked_text .= _tag_html($char, 'gonin1', $GONIN1->{$char});
+                }
             }
             elsif ($self->{'gonin2'} && $GONIN2->{$char})
             {
-                $checked_text .= " [gonin2]【$char】（" . $GONIN2->{$char} . "） ";
+                if ($output_format eq 'plaintext')
+                {
+                    $checked_text .= "$char [gonin2]【$char】（" . $GONIN2->{$char} . "） ";
+                }
+                elsif ($output_format eq 'html')
+                {
+                    $checked_text .= _tag_html($char, 'gonin2', $GONIN2->{$char});
+                }
             }
             elsif ($self->{'gonin3'} && $GONIN3->{$char})
             {
-                $checked_text .= " [gonin3]【$char】（" . $GONIN3->{$char} . "） ";
+                if ($output_format eq 'plaintext')
+                {
+                    $checked_text .= "$char [gonin3]【$char】（" . $GONIN3->{$char} . "） ";
+                }
+                elsif ($output_format eq 'html')
+                {
+                    $checked_text .= _tag_html($char, 'gonin3', $GONIN3->{$char});
+                }
             }
+            elsif ( $self->{'gaiji'} && _is_gaiji($char) )
+            {
+                if ($output_format eq 'plaintext')
+                {
+                    $checked_text .= "$char [gaiji]【$char】 ";
+                }
+                elsif ($output_format eq 'html')
+                {
+                    $checked_text .= _tag_html($char, 'gaiji');
+                }
+            }
+            else { $checked_text .= $char; }
         }
-
-        $checked_text .= " [gaiji]【$char】 " if $self->{'gaiji'} && _is_gaiji($char);
     }
-
 
     return $checked_text;
 }
@@ -250,6 +367,7 @@ AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チ�
       'gonin2'           => 0, # 誤認しやすい文字をチェックする(2)
       'gonin3'           => 0, # 誤認しやすい文字をチェックする(3)
       'simplesp'         => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
+      'output_format'    => 'plaintext', # plaintext または html
   );
 
 上記のコードで設定されている値がデフォルト値です。

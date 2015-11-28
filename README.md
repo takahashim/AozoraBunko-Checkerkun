@@ -33,6 +33,7 @@ AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チ�
         'gonin2'           => 0, # 誤認しやすい文字をチェックする(2)
         'gonin3'           => 0, # 誤認しやすい文字をチェックする(3)
         'simplesp'         => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
+        'output_format'    => 'plaintext', # plaintext または html
     );
 
 上記のコードで設定されている値がデフォルト値です。

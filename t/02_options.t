@@ -18,6 +18,7 @@ my %option = (
     'gonin2'           => 0, # 誤認しやすい文字をチェックする(2)
     'gonin3'           => 0, # 誤認しやすい文字をチェックする(3)
     'simplesp'         => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
+    'output_format'    => 'plaintext', # 'plaintext' または 'html'
 );
 
 subtest 'no options' => sub {

@@ -97,8 +97,7 @@ sub _check_all_hosetsu_tekiyo
 
     if ( join("", @{$chars_ref}[$index .. $rear_index]) =~ /^(［＃.*?水準(\d+\-\d+\-\d+).*?］)/ )
     {
-        my $match    = $1;
-        my $kutenmen = $2;
+        my ($match, $kutenmen) = ($1, $2);
 
         if ( $self->{'78hosetsu_tekiyo'} && exists $KUTENMEN_78HOSETSU_TEKIYO->{$kutenmen} )
         {

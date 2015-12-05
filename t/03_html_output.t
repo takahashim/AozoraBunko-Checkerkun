@@ -86,7 +86,7 @@ subtest 'zensp' => sub {
 subtest '78hosetsu_tekiyo' => sub {
     my %opts = %option;
 
-    my $text = '鷗※［＃「區＋鳥」、第3水準1-94-69］外' x 2;
+    my $text = '※［＃「區＋鳥」、第3水準1-94-69］外' x 2;
 
     my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
@@ -94,13 +94,13 @@ subtest '78hosetsu_tekiyo' => sub {
     $opts{'78hosetsu_tekiyo'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '鷗<span data-checkerkun-tag="j78hosetsuTekiyo" data-checkerkun-message="鴎">※［＃「區＋鳥」、第3水準1-94-69］</span>外' x 2);
+    is($checker2->check($text), '<span data-checkerkun-tag="78hosetsuTekiyo" data-checkerkun-message="鴎">※［＃「區＋鳥」、第3水準1-94-69］</span>外' x 2);
 };
 
 subtest 'hosetsu_tekiyo' => sub {
     my %opts = %option;
 
-    my $text = '既※［＃「漑－さんずい」、第3水準1-85-11］' x 2;
+    my $text = '※［＃「漑－さんずい」、第3水準1-85-11］' x 2;
 
     my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
@@ -108,7 +108,7 @@ subtest 'hosetsu_tekiyo' => sub {
     $opts{'hosetsu_tekiyo'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '既<span data-checkerkun-tag="hosetsuTekiyo" data-checkerkun-message="既">※［＃「漑－さんずい」、第3水準1-85-11］</span>' x 2);
+    is($checker2->check($text), '<span data-checkerkun-tag="hosetsuTekiyo" data-checkerkun-message="既">※［＃「漑－さんずい」、第3水準1-85-11］</span>' x 2);
 };
 
 subtest 'j78' => sub {
@@ -122,7 +122,7 @@ subtest 'j78' => sub {
     $opts{'78'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '<span data-checkerkun-tag="j78" data-checkerkun-message="第三水準1-15-8に">唖</span>然' x 2);
+    is($checker2->check($text), '<span data-checkerkun-tag="78" data-checkerkun-message="第三水準1-15-8に">唖</span>然' x 2);
 };
 
 subtest 'jyogai' => sub {
@@ -218,7 +218,7 @@ subtest 'gaiji, 78hosetsu_tekiyo & hosetsu_tekiyo' => sub {
     $opts{'hosetsu_tekiyo'}   = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '<span data-checkerkun-tag="gaiji">鷗</span><span data-checkerkun-tag="j78hosetsuTekiyo" data-checkerkun-message="鴎">※［＃「區＋鳥」、第3水準1-94-69］</span><span data-checkerkun-tag="gaiji">既</span><span data-checkerkun-tag="hosetsuTekiyo" data-checkerkun-message="既">※［＃「漑－さんずい」、第3水準1-85-11］</span>' x 1000);
+    is($checker2->check($text), '<span data-checkerkun-tag="gaiji">鷗</span><span data-checkerkun-tag="78hosetsuTekiyo" data-checkerkun-message="鴎">※［＃「區＋鳥」、第3水準1-94-69］</span><span data-checkerkun-tag="gaiji">既</span><span data-checkerkun-tag="hosetsuTekiyo" data-checkerkun-message="既">※［＃「漑－さんずい」、第3水準1-85-11］</span>' x 1000);
 };
 
 done_testing;

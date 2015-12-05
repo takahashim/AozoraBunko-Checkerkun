@@ -1,5 +1,5 @@
 package AozoraBunko::Tools::Checkerkun;
-our $VERSION = "0.03";
+our $VERSION = "0.05";
 
 use 5.008001;
 use strict;

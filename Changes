@@ -2,6 +2,11 @@ Revision history for Perl extension AozoraBunko-Tools-Checkerkun
 
 {{$NEXT}}
 
+    - Improved documentation
+    - Improved html output
+    - Renamed j78 78
+    - Fixed simplesp option
+
 0.03 2015-12-05T11:58:37Z
 
     - Improved documentation

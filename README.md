@@ -8,7 +8,8 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
     use utf8;
 
     my $checker1 = AozoraBunko::Tools::Checkerkun->new;
-    $checker1->check('森鷗※［＃「區＋鳥」、第3水準1-94-69］外💓'); # => '森鷗 [gaiji]【鷗】 ※［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 外💓 [gaiji]【💓】 '
+    $checker1->check('森※［＃「區＋鳥」、第3水準1-94-69］外💓'); # => '森※［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 外💓 [gaiji]【💓】 '
+    $checker1->check('森鷗外💓'); # => '森鷗 [gaiji]【鷗】 外💓 [gaiji]【💓】 '
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new({ output_format => 'html', gonin1 => 1, gonin2 => 1, gonin3 => 1 });
     $checker2->check('桂さんが柱を壊した。'); # => '<span data-checkerkun-tag="gonin3" data-checkerkun-message="かつら">桂</span>さんが<span data-checkerkun-tag="gonin3" data-checkerkun-message="はしら">柱</span>を壊した。'

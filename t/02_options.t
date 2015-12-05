@@ -86,7 +86,7 @@ subtest 'zensp' => sub {
 subtest '78hosetsu_tekiyo' => sub {
     my %opts = %option;
 
-    my $text = '鷗※［＃「區＋鳥」、第3水準1-94-69］外' x 2;
+    my $text = '※［＃「區＋鳥」、第3水準1-94-69］外' x 2;
 
     my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
@@ -94,13 +94,13 @@ subtest '78hosetsu_tekiyo' => sub {
     $opts{'78hosetsu_tekiyo'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '鷗※［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 外' x 2);
+    is($checker2->check($text), '※［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 外' x 2);
 };
 
 subtest 'hosetsu_tekiyo' => sub {
     my %opts = %option;
 
-    my $text = '既※［＃「漑－さんずい」、第3水準1-85-11］' x 2;
+    my $text = '※［＃「漑－さんずい」、第3水準1-85-11］' x 2;
 
     my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
@@ -108,7 +108,7 @@ subtest 'hosetsu_tekiyo' => sub {
     $opts{'hosetsu_tekiyo'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '既※［＃「漑－さんずい」、第3水準1-85-11］ → [hosetsu_tekiyo]【既】 ' x 2);
+    is($checker2->check($text), '※［＃「漑－さんずい」、第3水準1-85-11］ → [hosetsu_tekiyo]【既】 ' x 2);
 };
 
 subtest 'j78' => sub {

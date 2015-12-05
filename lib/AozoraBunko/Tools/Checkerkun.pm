@@ -192,7 +192,7 @@ sub check
             }
             elsif ($output_format eq 'html')
             {
-                $checked_text .= _tag_html($char, 'ctrl');
+                $checked_text .= _tag_html($char, 'ctrl', sprintf("U+%04X", ord $char));
             }
         }
         elsif ($char =~ /\p{InHalfwidthKatakana}/)
@@ -260,7 +260,7 @@ sub check
                 }
                 elsif ($output_format eq 'html')
                 {
-                    $checked_text .= _tag_html($char, 'j78');
+                    $checked_text .= _tag_html($char, 'j78', $J78->{$char});
                 }
             }
             elsif ($self->{'jyogai'} && $JYOGAI->{$char})
@@ -393,7 +393,7 @@ L<包摂 (文字コード) - Wikipedia|https://ja.wikipedia.org/wiki/%E5%8C%85%E
 
 L<JIS漢字で包摂の扱いが変わる文字（[78] [jyogai] など）|http://www.aozora.gr.jp/newJIS-Kanji/gokan_henkou_list.html>
 
-L<Embedding custom non-visible data with the data-* attributes|http://www.w3.org/TR/2011/WD-html5-20110525/elements.html#embedding-custom-non-visible-data-with-the-data-attributes>
+L<Embedding custom non-visible data- with the data attributes|http://www.w3.org/TR/2011/WD-html5-20110525/elements.html#embedding-custom-non-visible-data-with-the-data-attributes>
 
 =head1 AUTHOR
 

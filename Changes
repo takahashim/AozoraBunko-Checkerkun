@@ -2,6 +2,9 @@ Revision history for Perl extension AozoraBunko-Tools-Checkerkun
 
 {{$NEXT}}
 
+    - Added output_format option
+    - Improved documentation
+
 0.01 2015-11-23T15:21:17Z
 
     - original version

@@ -24,7 +24,7 @@ my %option = (
 subtest 'no options' => sub {
     my $text = "\x{0000}\r\nｴ AB　Ｃ" x 2;
     my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%option);
-    is($checker1->check($text), "\x{0000} [ctrl]【U+0000】 \r\nｴ [hankata]【ｴ】  AB　Ｃ" x 2);
+    is($checker1->check($text), "\x{0000}[ctrl]（U+0000）\r\nｴ[hankata] AB　Ｃ" x 2);
 };
 
 subtest 'gaiji' => sub {
@@ -38,7 +38,7 @@ subtest 'gaiji' => sub {
     $opts{'gaiji'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '森鷗 [gaiji]【鷗】 外' x 2);
+    is($checker2->check($text), '森鷗[gaiji]外' x 2);
 };
 
 subtest 'hansp' => sub {
@@ -52,7 +52,7 @@ subtest 'hansp' => sub {
     $opts{'hansp'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '太宰  [hansp]【 】 治' x 2);
+    is($checker2->check($text), '太宰 [hansp]治' x 2);
 };
 
 subtest 'hanpar' => sub {
@@ -66,7 +66,7 @@ subtest 'hanpar' => sub {
     $opts{'hanpar'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '太) [hanpar]【)】 宰治( [hanpar]【(】 ' x 2);
+    is($checker2->check($text), '太)[hanpar]宰治([hanpar]' x 2);
 };
 
 subtest 'zensp' => sub {
@@ -80,7 +80,7 @@ subtest 'zensp' => sub {
     $opts{'zensp'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '太宰　 [zensp]【　】 治' x 2);
+    is($checker2->check($text), '太宰　[zensp]治' x 2);
 };
 
 subtest '78hosetsu_tekiyo' => sub {
@@ -94,7 +94,7 @@ subtest '78hosetsu_tekiyo' => sub {
     $opts{'78hosetsu_tekiyo'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '※［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 外' x 2);
+    is($checker2->check($text), '※［＃「區＋鳥」、第3水準1-94-69］→[78hosetsu_tekiyo]【鴎】外' x 2);
 };
 
 subtest 'hosetsu_tekiyo' => sub {
@@ -108,7 +108,7 @@ subtest 'hosetsu_tekiyo' => sub {
     $opts{'hosetsu_tekiyo'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '※［＃「漑－さんずい」、第3水準1-85-11］ → [hosetsu_tekiyo]【既】 ' x 2);
+    is($checker2->check($text), '※［＃「漑－さんずい」、第3水準1-85-11］→[hosetsu_tekiyo]【既】' x 2);
 };
 
 subtest 'j78' => sub {
@@ -122,7 +122,7 @@ subtest 'j78' => sub {
     $opts{'78'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '唖 [78]【唖】（第三水準1-15-8に） 然' x 2);
+    is($checker2->check($text), '唖[78]（第三水準1-15-8に）然' x 2);
 };
 
 subtest 'jyogai' => sub {
@@ -136,7 +136,7 @@ subtest 'jyogai' => sub {
     $opts{'jyogai'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '戻 [jyogai]【戻】 戾' x 2);
+    is($checker2->check($text), '戻[jyogai]戾' x 2);
 };
 
 subtest 'gonin1' => sub {
@@ -150,7 +150,7 @@ subtest 'gonin1' => sub {
     $opts{'gonin1'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '目 [gonin1]【目】（中にあるのは横棒二本） 白 [gonin1]【白】（中にあるのは横棒一本） ' x 2);
+    is($checker2->check($text), '目[gonin1]（中にあるのは横棒二本）白[gonin1]（中にあるのは横棒一本）' x 2);
 };
 
 subtest 'gonin2' => sub {
@@ -164,7 +164,7 @@ subtest 'gonin2' => sub {
     $opts{'gonin2'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '沖 [gonin2]【沖】（さんずい） 縄の冲 [gonin2]【冲】（にすい） 方丁' x 2);
+    is($checker2->check($text), '沖[gonin2]（さんずい）縄の冲[gonin2]（にすい）方丁' x 2);
 };
 
 subtest 'gonin3' => sub {
@@ -178,7 +178,7 @@ subtest 'gonin3' => sub {
     $opts{'gonin3'} = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '桂 [gonin3]【桂】（かつら） さんが柱 [gonin3]【柱】（はしら） 壊した' x 2);
+    is($checker2->check($text), '桂[gonin3]（かつら）さんが柱[gonin3]（はしら）壊した' x 2);
 };
 
 subtest 'simplesp' => sub {
@@ -218,7 +218,7 @@ subtest 'gaiji, 78hosetsu_tekiyo & hosetsu_tekiyo' => sub {
     $opts{'hosetsu_tekiyo'}   = 1;
 
     my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
-    is($checker2->check($text), '鷗 [gaiji]【鷗】 ※［＃「區＋鳥」、第3水準1-94-69］ → [78hosetsu_tekiyo]【鴎】 既 [gaiji]【既】 ※［＃「漑－さんずい」、第3水準1-85-11］ → [hosetsu_tekiyo]【既】 ' x 1000);
+    is($checker2->check($text), '鷗[gaiji]※［＃「區＋鳥」、第3水準1-94-69］→[78hosetsu_tekiyo]【鴎】既[gaiji]※［＃「漑－さんずい」、第3水準1-85-11］→[hosetsu_tekiyo]【既】' x 1000);
 };
 
 subtest 'hash size' => sub {

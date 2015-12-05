@@ -96,14 +96,14 @@ sub _tag_html
 
 # 例：
 #
-# ［＃「口＋亞」、第3水準1-15-8、144-上-9］
+# ※［＃「口＋亞」、第3水準1-15-8、144-上-9］
 # が
-# ［＃「口＋亞」、第3水準1-15-8、144-上-9］ → [78hosetsu_tekiyo]【唖】
+# ※［＃「口＋亞」、第3水準1-15-8、144-上-9］ → [78hosetsu_tekiyo]【唖】
 # に変換され、
 #
-#［＃「にんべん＋曾」、第3水準1-14-41、144-上-9］
+# ※［＃「にんべん＋曾」、第3水準1-14-41、144-上-9］
 # が
-#［＃「にんべん＋曾」、第3水準1-14-41、144-上-9］→[hosetsu_tekiyo]【僧】
+# ※［＃「にんべん＋曾」、第3水準1-14-41、144-上-9］→[hosetsu_tekiyo]【僧】
 # に変換される。
 #
 sub _check_all_hosetsu_tekiyo
@@ -346,7 +346,7 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
 
 =head1 DESCRIPTION
 
-AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チェッカーで、結城浩氏が作成したツールを私がライブラリ化したものです。
+AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チェッカーで、結城浩氏が作成したスクリプトを私がライブラリ化したものです。
 
 =head1 METHODS
 
@@ -367,14 +367,14 @@ AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チ�
       'gonin2'           => 0, # 誤認しやすい文字をチェックする(2)
       'gonin3'           => 0, # 誤認しやすい文字をチェックする(3)
       'simplesp'         => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
-      'output_format'    => 'plaintext', # plaintext または html
+      'output_format'    => 'plaintext', # 出力フォーマット（plaintext または html）
   );
 
 上記のコードで設定されている値がデフォルト値です。
 
 =head2 $checked_text = $checker->check($text)
 
-new で指定したオプションでテキストをチェックします。戻り値はチェック済みのテキストです。
+new で指定したオプションでテキストをチェックします。戻り値はチェック後のテキストです。
 
 =head1 LICENSE
 
@@ -392,6 +392,8 @@ L<外字|http://www.aozora.gr.jp/annotation/external_character.html>
 L<包摂 (文字コード) - Wikipedia|https://ja.wikipedia.org/wiki/%E5%8C%85%E6%91%82_(%E6%96%87%E5%AD%97%E3%82%B3%E3%83%BC%E3%83%89)>
 
 L<JIS漢字で包摂の扱いが変わる文字（[78] [jyogai] など）|http://www.aozora.gr.jp/newJIS-Kanji/gokan_henkou_list.html>
+
+L<Embedding custom non-visible data with the data-* attributes|http://www.w3.org/TR/2011/WD-html5-20110525/elements.html#embedding-custom-non-visible-data-with-the-data-attributes>
 
 =head1 AUTHOR
 

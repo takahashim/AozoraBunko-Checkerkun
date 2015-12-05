@@ -366,7 +366,7 @@ AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チ�
 
 =head2 $checker = AozoraBunko::Tools::Checkerkun->new(\%option)
 
-新しい Aozorabunko::Tools::Checkerkun インスタンスを生成する。
+新しい Aozorabunko::Tools::Checkerkun インスタンスを生成します。
 
   my $checker = AozoraBunko::Tools::Checkerkun->new(
       'gaiji'            => 1, # JIS外字をチェックする

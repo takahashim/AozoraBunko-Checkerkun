@@ -176,10 +176,20 @@ sub check
     {
         my $char = $chars[$i];
 
-        if ($self->{simplesp})
+        if ( $self->{simplesp} && ($char eq "\x{0020}" || $char eq "\x{3000}") )
         {
-            $char = '_'  if $char eq "\x{0020}";
-            $char = '□' if $char eq "\x{3000}";
+            if ($output_format eq 'plaintext')
+            {
+                   if ($char eq "\x{0020}") { $checked_text .= '_';  }
+                elsif ($char eq "\x{3000}") { $checked_text .= '□'; }
+            }
+            elsif ($output_format eq 'html')
+            {
+                   if ($char eq "\x{0020}") { $checked_text .= _tag_html('_', 'simplesp');  }
+                elsif ($char eq "\x{3000}") { $checked_text .= _tag_html('□', 'simplesp'); }
+            }
+
+            next;
         }
 
         if ($char =~ /[\x{0000}-\x{0009}\x{000B}\x{000C}\x{000E}-\x{001F}\x{007F}-\x{009F}]/)
@@ -203,10 +213,10 @@ sub check
             }
             elsif ($output_format eq 'html')
             {
-                $checked_text .= _tag_html($char, 'hankata');
+                $checked_text .= _tag_html($char, 'hankata', '半角カタカナ');
             }
         }
-        elsif ($self->{'hansp'} && $char =~ "\x{0020}")
+        elsif ($self->{'hansp'} && $char eq "\x{0020}")
         {
             if ($output_format eq 'plaintext')
             {
@@ -214,7 +224,7 @@ sub check
             }
             elsif ($output_format eq 'html')
             {
-                $checked_text .= _tag_html($char, 'hansp');
+                $checked_text .= _tag_html($char, 'hansp', '半角スペース');
             }
         }
         elsif ($self->{'zensp'} && $char eq "\x{3000}")
@@ -225,7 +235,7 @@ sub check
             }
             elsif ($output_format eq 'html')
             {
-                $checked_text .= _tag_html($char, 'zensp');
+                $checked_text .= _tag_html($char, 'zensp', '全角スペース');
             }
         }
         elsif ( $self->{hanpar} && ($char eq '(' || $char eq ')') )
@@ -236,7 +246,7 @@ sub check
             }
             elsif ($output_format eq 'html')
             {
-                $checked_text .= _tag_html($char, 'hanpar');
+                $checked_text .= _tag_html($char, 'hanpar', '半角括弧');
             }
         }
         elsif ( $char eq '※' && ($self->{'78hosetsu_tekiyo'} || $self->{'hosetsu_tekiyo'}) )
@@ -271,7 +281,7 @@ sub check
                 }
                 elsif ($output_format eq 'html')
                 {
-                    $checked_text .= _tag_html($char, 'jyogai');
+                    $checked_text .= _tag_html($char, 'jyogai', '新JIS漢字で包摂規準の適用除外となる');
                 }
             }
             elsif ($self->{'gonin1'} && $GONIN1->{$char})
@@ -315,7 +325,7 @@ sub check
                 }
                 elsif ($output_format eq 'html')
                 {
-                    $checked_text .= _tag_html($char, 'gaiji');
+                    $checked_text .= _tag_html($char, 'gaiji', 'JIS外字');
                 }
             }
             else { $checked_text .= $char; }

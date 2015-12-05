@@ -59,7 +59,7 @@ new で指定したオプションでテキストをチェックします。戻�
 
 [JIS漢字で包摂の扱いが変わる文字（\[78\] \[jyogai\] など）](http://www.aozora.gr.jp/newJIS-Kanji/gokan_henkou_list.html)
 
-[Embedding custom non-visible data-\* with the data attributes](http://www.w3.org/TR/html5/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes)
+[Embedding custom non-visible data with the data-\* attributes](http://www.w3.org/TR/html5/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes)
 
 # LICENSE
 

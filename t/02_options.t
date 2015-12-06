@@ -2,7 +2,9 @@ use strict;
 use warnings;
 use utf8;
 use AozoraBunko::Tools::Checkerkun;
+use Encode qw//;
 use Test::More;
+use Test::Fatal;
 binmode Test::More->builder->$_ => ':utf8' for qw/output failure_output todo_output/;
 
 my %option = (
@@ -227,6 +229,42 @@ subtest 'hash size' => sub {
     is(scalar keys %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_HOSETSU_TEKIYO},   104);
     is(scalar keys %{$AozoraBunko::Tools::Checkerkun::JYOGAI},                    104);
     is(scalar keys %{$AozoraBunko::Tools::Checkerkun::J78},                       29);
+};
+
+subtest 'hiden_no_tare has no gaiji' => sub {
+    my @key_list = (
+        keys %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
+      , keys %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
+      , keys %{$AozoraBunko::Tools::Checkerkun::JYOGAI}
+      , keys %{$AozoraBunko::Tools::Checkerkun::J78}
+      , keys %{$AozoraBunko::Tools::Checkerkun::GONIN1}
+      , keys %{$AozoraBunko::Tools::Checkerkun::GONIN2}
+      , keys %{$AozoraBunko::Tools::Checkerkun::GONIN3}
+      , keys %{$AozoraBunko::Tools::Checkerkun::KYUJI}
+      , keys %{$AozoraBunko::Tools::Checkerkun::ITAIJI}
+    );
+
+    my @value_list = (
+          values %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
+        , values %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
+        , values %{$AozoraBunko::Tools::Checkerkun::JYOGAI}
+        , values %{$AozoraBunko::Tools::Checkerkun::J78}
+        , values %{$AozoraBunko::Tools::Checkerkun::GONIN1}
+        , values %{$AozoraBunko::Tools::Checkerkun::GONIN2}
+        , values %{$AozoraBunko::Tools::Checkerkun::GONIN3}
+        , values %{$AozoraBunko::Tools::Checkerkun::KYUJI}
+        , values %{$AozoraBunko::Tools::Checkerkun::ITAIJI}
+    );
+
+    my $enc = Encode::find_encoding("Shift_JIS");
+
+    my $exception;
+
+    $exception = exception { $enc->encode(join('', @key_list), Encode::FB_CROAK) };
+    is($exception, undef, 'keys have no gaiji');
+
+    $exception = exception { $enc->encode(join('', @value_list), Encode::FB_CROAK) };
+    is($exception, undef, 'values have no gaiji');
 };
 
 done_testing;

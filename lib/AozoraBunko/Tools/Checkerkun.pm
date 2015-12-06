@@ -58,6 +58,7 @@ sub _default_options
         'gonin2'           => 0, # 誤認しやすい文字をチェックする(2)
         'gonin3'           => 0, # 誤認しやすい文字をチェックする(3)
         'simplesp'         => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
+        'kouetsukun'       => 0, # 旧字体置換可能チェッカー「校閲君」を有効にする
         'output_format'    => 'plaintext', # plaintext または html
     };
 }
@@ -362,6 +363,8 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
 
 AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チェッカーで、結城浩氏が作成したスクリプトを私がライブラリ化したものです。
 
+大野裕・結城浩・ゼファー生の各氏による旧字体置換可能チェッカー「校閲君」もこのライブラリに組み込まれています。
+
 =head1 METHODS
 
 =head2 $checker = AozoraBunko::Tools::Checkerkun->new(\%option)
@@ -381,6 +384,7 @@ AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チ�
       'gonin2'           => 0, # 誤認しやすい文字をチェックする(2)
       'gonin3'           => 0, # 誤認しやすい文字をチェックする(3)
       'simplesp'         => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
+      'kouetsukun'       => 0, # 旧字体置換可能チェッカー「校閲君」を有効にする
       'output_format'    => 'plaintext', # 出力フォーマット（plaintext または html）
   );
 
@@ -401,6 +405,8 @@ L<外字|http://www.aozora.gr.jp/annotation/external_character.html>
 L<包摂 (文字コード) - Wikipedia|https://ja.wikipedia.org/wiki/%E5%8C%85%E6%91%82_(%E6%96%87%E5%AD%97%E3%82%B3%E3%83%BC%E3%83%89)>
 
 L<JIS漢字で包摂の扱いが変わる文字（[78] [jyogai] など）|http://www.aozora.gr.jp/newJIS-Kanji/gokan_henkou_list.html>
+
+L<校閲君を使ってみよう|http://www.aozora.gr.jp/tools/kouetsukun/online_kouetsukun.html>
 
 L<Embedding custom non-visible data with the data-* attributes|http://www.w3.org/TR/html5/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes>
 

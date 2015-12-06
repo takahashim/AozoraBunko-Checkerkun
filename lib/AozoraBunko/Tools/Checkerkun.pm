@@ -43,6 +43,12 @@ our $GONIN2 = $YAML->{'gonin2'};
 # （砂場清隆さんの入力による）
 our $GONIN3 = $YAML->{'gonin3'};
 
+# 新字体・旧字体対応リスト
+our $KYUJI = $YAML->{'kyuji'};
+
+# 異体字
+our $ITAIJI = $YAML->{'itaiji'};
+
 sub _default_options
 {
     return {
@@ -58,6 +64,7 @@ sub _default_options
         'gonin2'           => 0, # 誤認しやすい文字をチェックする(2)
         'gonin3'           => 0, # 誤認しやすい文字をチェックする(3)
         'simplesp'         => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
+        'kouetsukun'       => 0, # 旧字体置換可能チェッカー「校閲君」を有効にする
         'output_format'    => 'plaintext', # plaintext または html
     };
 }
@@ -284,6 +291,28 @@ sub check
                     $checked_text .= _tag_html($char, 'jyogai', '新JIS漢字で包摂規準の適用除外となる');
                 }
             }
+            elsif ($self->{'kouetsukun'} && $KYUJI->{$char})
+            {
+                if ($output_format eq 'plaintext')
+                {
+                    $checked_text .= "▼$char$KYUJI->{$char}▲";
+                }
+                elsif ($output_format eq 'html')
+                {
+                    $checked_text .= _tag_html($char, 'kyuji', $KYUJI->{$char});
+                }
+            }
+            elsif ($self->{'kouetsukun'} && $ITAIJI->{$char})
+            {
+                if ($output_format eq 'plaintext')
+                {
+                    $checked_text .= "▼$char$ITAIJI->{$char}▲";
+                }
+                elsif ($output_format eq 'html')
+                {
+                    $checked_text .= _tag_html($char, 'itaiji', $ITAIJI->{$char});
+                }
+            }
             elsif ($self->{'gonin1'} && $GONIN1->{$char})
             {
                 if ($output_format eq 'plaintext')
@@ -358,9 +387,14 @@ AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チ�
   my $checker2 = AozoraBunko::Tools::Checkerkun->new({ output_format => 'html', gonin1 => 1, gonin2 => 1, gonin3 => 1 });
   $checker2->check('桂さんが柱を壊した。'); # => '<span data-checkerkun-tag="gonin3" data-checkerkun-message="かつら">桂</span>さんが<span data-checkerkun-tag="gonin3" data-checkerkun-message="はしら">柱</span>を壊した。'
 
+  my $checker3 = AozoraBunko::Tools::Checkerkun->new({ kouetsukun => 1 });
+  $checker3->check('薮さん'); # => '▼薮藪籔▲さん'
+
 =head1 DESCRIPTION
 
 AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チェッカーで、結城浩氏が作成したスクリプトを私がライブラリ化したものです。
+
+大野裕・結城浩・ゼファー生の各氏による旧字体置換可能チェッカー「校閲君」もこのライブラリに組み込まれています。
 
 =head1 METHODS
 
@@ -381,6 +415,7 @@ AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チ�
       'gonin2'           => 0, # 誤認しやすい文字をチェックする(2)
       'gonin3'           => 0, # 誤認しやすい文字をチェックする(3)
       'simplesp'         => 0, # 半角スペースは「_」で、全角スペースは「□」で出力する
+      'kouetsukun'       => 0, # 旧字体置換可能チェッカー「校閲君」を有効にする（html出力時は kyuji か itaiji のチェッカー君タグ情報が付きます。）
       'output_format'    => 'plaintext', # 出力フォーマット（plaintext または html）
   );
 
@@ -401,6 +436,8 @@ L<外字|http://www.aozora.gr.jp/annotation/external_character.html>
 L<包摂 (文字コード) - Wikipedia|https://ja.wikipedia.org/wiki/%E5%8C%85%E6%91%82_(%E6%96%87%E5%AD%97%E3%82%B3%E3%83%BC%E3%83%89)>
 
 L<JIS漢字で包摂の扱いが変わる文字（[78] [jyogai] など）|http://www.aozora.gr.jp/newJIS-Kanji/gokan_henkou_list.html>
+
+L<校閲君を使ってみよう|http://www.aozora.gr.jp/tools/kouetsukun/online_kouetsukun.html>
 
 L<Embedding custom non-visible data with the data-* attributes|http://www.w3.org/TR/html5/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes>
 

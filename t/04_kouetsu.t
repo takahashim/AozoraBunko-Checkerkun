@@ -30,7 +30,7 @@ subtest 'plaintext output' => sub {
 
 subtest 'html output' => sub {
     my %opts = %option;
-    %opts{'output_format'} = 'html';
+    $opts{'output_format'} = 'html';
 
     my $text = "\x{0000}\r\nｴ A繊瑶薮B　Ｃ" x 2;
     my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);

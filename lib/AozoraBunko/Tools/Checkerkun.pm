@@ -431,6 +431,45 @@ AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チ�
 
 new で指定したオプションでテキストをチェックします。戻り値はチェック後のテキストです。
 
+=head1 秘伝のタレ（文字チェック用ハッシュリファレンス）へのアクセス
+
+このモジュールを use すると以下の文字チェック用ハッシュリファレンスへアクセス可能になります。
+
+  # 78互換包摂の対象となる不要な外字注記をチェックする
+  $AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO;
+
+  # 包摂の対象となる不要な外字注記をチェックする
+  $AozoraBunko::Tools::Checkerkun::KUTENMEN_HOSETSU_TEKIYO;
+
+  # 新JIS漢字で包摂基準の適用除外となる104字
+  $AozoraBunko::Tools::Checkerkun::JYOGAI;
+
+  # 78互換文字
+  $AozoraBunko::Tools::Checkerkun::J78;
+
+  # 誤認1
+  # 間違えやすい文字
+  # かとうかおりさんの「誤認識されやすい文字リスト」から
+  # http://plaza.users.to/katokao/digipr/digipr_charlist.html
+  $AozoraBunko::Tools::Checkerkun::GONIN1;
+
+  # 誤認2
+  $AozoraBunko::Tools::Checkerkun::GONIN2;
+
+  # 誤認3
+  # （砂場清隆さんの入力による）
+  $AozoraBunko::Tools::Checkerkun::GONIN3;
+
+  # 新字体・旧字体対応リスト
+  $AozoraBunko::Tools::Checkerkun::KYUJI;
+
+  # 異体字
+  $AozoraBunko::Tools::Checkerkun::ITAIJI;
+
+=head1 秘伝のタレを増量させたい
+
+電子メールや github で要望を受け付けております。
+
 =head1 SEE ALSO
 
 L<青空文庫作業マニュアル【入力編】|http://www.aozora.gr.jp/aozora-manual/index-input.html>

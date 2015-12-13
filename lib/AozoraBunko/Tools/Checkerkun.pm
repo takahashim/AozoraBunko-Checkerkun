@@ -269,6 +269,8 @@ sub check
         }
         else
         {
+            # ここからは複数のタグが付く可能性がある
+
             if ($self->{'78'} && $J78->{$char})
             {
                 if ($output_format eq 'plaintext')

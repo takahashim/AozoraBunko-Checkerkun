@@ -1,36 +1,36 @@
 # NAME
 
-AozoraBunko::Tools::Checkerkun - 青空文庫の工作員のための文字チェッカー（作：結城浩）をライブラリ化したもの
+AozoraBunko::Checkerkun - 青空文庫の工作員のための文字チェッカー（作：結城浩）をライブラリ化したもの
 
 # SYNOPSIS
 
-    use AozoraBunko::Tools::Checkerkun;
+    use AozoraBunko::Checkerkun;
     use utf8;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new;
+    my $checker1 = AozoraBunko::Checkerkun->new;
     $checker1->check('森※［＃「區＋鳥」、第3水準1-94-69］外💓'); # => '森※［＃「區＋鳥」、第3水準1-94-69］→[78hosetsu_tekiyo]【鴎】外💓[gaiji]'
     $checker1->check('森鷗外'); # => '森鷗[gaiji]外'
     $checker1->check('森鴎外'); # => '森鴎外'
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new({ output_format => 'html', gonin1 => 1, gonin2 => 1, gonin3 => 1 });
+    my $checker2 = AozoraBunko::Checkerkun->new({ output_format => 'html', gonin1 => 1, gonin2 => 1, gonin3 => 1 });
     $checker2->check('桂さんが柱を壊した。'); # => '<span data-checkerkun-tag="gonin3" data-checkerkun-message="かつら">桂</span>さんが<span data-checkerkun-tag="gonin3" data-checkerkun-message="はしら">柱</span>を壊した。'
 
-    my $checker3 = AozoraBunko::Tools::Checkerkun->new({ kouetsukun => 1 });
+    my $checker3 = AozoraBunko::Checkerkun->new({ kouetsukun => 1 });
     $checker3->check('薮さん'); # => '▼薮藪籔▲さん'
 
 # DESCRIPTION
 
-AozoraBunko::Tools::Checkerkun は、青空文庫工作員のための文字チェッカーで、結城浩氏が作成したスクリプトを私がライブラリ化したものです。
+AozoraBunko::Checkerkun は、青空文庫工作員のための文字チェッカーで、結城浩氏が作成したスクリプトを私がライブラリ化したものです。
 
 大野裕・結城浩・ゼファー生の各氏による旧字体置換可能チェッカー「校閲君」もこのライブラリに組み込まれています。
 
 # METHODS
 
-## $checker = AozoraBunko::Tools::Checkerkun->new(\\%option)
+## $checker = AozoraBunko::Checkerkun->new(\\%option)
 
-新しい Aozorabunko::Tools::Checkerkun インスタンスを生成します。
+新しい AozoraBunko::Checkerkun インスタンスを生成します。
 
-    my $checker = AozoraBunko::Tools::Checkerkun->new(
+    my $checker = AozoraBunko::Checkerkun->new(
         'gaiji'            => 1, # JIS外字をチェックする
         'hansp'            => 1, # 半角スペースをチェックする
         'hanpar'           => 1, # 半角カッコをチェックする
@@ -58,35 +58,35 @@ new で指定したオプションでテキストをチェックします。戻�
 このモジュールを use すると以下の文字チェック用ハッシュリファレンスへアクセス可能になります。
 
     # 78互換包摂の対象となる不要な外字注記をチェックする
-    $AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO;
+    $AozoraBunko::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO;
 
     # 包摂の対象となる不要な外字注記をチェックする
-    $AozoraBunko::Tools::Checkerkun::KUTENMEN_HOSETSU_TEKIYO;
+    $AozoraBunko::Checkerkun::KUTENMEN_HOSETSU_TEKIYO;
 
     # 新JIS漢字で包摂基準の適用除外となる104字
-    $AozoraBunko::Tools::Checkerkun::JYOGAI;
+    $AozoraBunko::Checkerkun::JYOGAI;
 
     # 78互換文字
-    $AozoraBunko::Tools::Checkerkun::J78;
+    $AozoraBunko::Checkerkun::J78;
 
     # 誤認1
     # 間違えやすい文字
     # かとうかおりさんの「誤認識されやすい文字リスト」から
     # http://plaza.users.to/katokao/digipr/digipr_charlist.html
-    $AozoraBunko::Tools::Checkerkun::GONIN1;
+    $AozoraBunko::Checkerkun::GONIN1;
 
     # 誤認2
-    $AozoraBunko::Tools::Checkerkun::GONIN2;
+    $AozoraBunko::Checkerkun::GONIN2;
 
     # 誤認3
     # （砂場清隆さんの入力による）
-    $AozoraBunko::Tools::Checkerkun::GONIN3;
+    $AozoraBunko::Checkerkun::GONIN3;
 
     # 新字体・旧字体対応リスト
-    $AozoraBunko::Tools::Checkerkun::KYUJI;
+    $AozoraBunko::Checkerkun::KYUJI;
 
     # 異体字
-    $AozoraBunko::Tools::Checkerkun::ITAIJI;
+    $AozoraBunko::Checkerkun::ITAIJI;
 
 # 秘伝のタレを増量させたい
 

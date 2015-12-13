@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use utf8;
-use AozoraBunko::Tools::Checkerkun;
+use AozoraBunko::Checkerkun;
 use Encode qw//;
 use Test::More;
 use Test::Fatal;
@@ -26,7 +26,7 @@ my %option = (
 
 subtest 'no options' => sub {
     my $text = "\x{0000}\r\nｴ AB　Ｃ" x 2;
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%option);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%option);
     is($checker1->check($text), "\x{0000}[ctrl]（U+0000）\r\nｴ[hankata] AB　Ｃ" x 2);
 };
 
@@ -35,12 +35,12 @@ subtest 'gaiji' => sub {
 
     my $text = '森鷗外' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'gaiji'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '森鷗[gaiji]外' x 2);
 };
 
@@ -49,12 +49,12 @@ subtest 'hansp' => sub {
 
     my $text = '太宰 治' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'hansp'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '太宰 [hansp]治' x 2);
 };
 
@@ -63,12 +63,12 @@ subtest 'hanpar' => sub {
 
     my $text = '太)宰治(' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'hanpar'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '太)[hanpar]宰治([hanpar]' x 2);
 };
 
@@ -77,12 +77,12 @@ subtest 'zensp' => sub {
 
     my $text = '太宰　治' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'zensp'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '太宰　[zensp]治' x 2);
 };
 
@@ -91,12 +91,12 @@ subtest '78hosetsu_tekiyo' => sub {
 
     my $text = '※［＃「區＋鳥」、第3水準1-94-69］外' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'78hosetsu_tekiyo'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '※［＃「區＋鳥」、第3水準1-94-69］→[78hosetsu_tekiyo]【鴎】外' x 2);
 };
 
@@ -105,12 +105,12 @@ subtest 'hosetsu_tekiyo' => sub {
 
     my $text = '※［＃「漑－さんずい」、第3水準1-85-11］' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'hosetsu_tekiyo'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '※［＃「漑－さんずい」、第3水準1-85-11］→[hosetsu_tekiyo]【既】' x 2);
 };
 
@@ -119,12 +119,12 @@ subtest 'j78' => sub {
 
     my $text = '唖然' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'78'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '唖[78]（第三水準1-15-8に）然' x 2);
 };
 
@@ -133,12 +133,12 @@ subtest 'jyogai' => sub {
 
     my $text = '戻戾' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'jyogai'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '戻[jyogai]戾' x 2);
 };
 
@@ -147,12 +147,12 @@ subtest 'gonin1' => sub {
 
     my $text = '目白' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'gonin1'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '目[gonin1]（中にあるのは横棒二本）白[gonin1]（中にあるのは横棒一本）' x 2);
 };
 
@@ -161,12 +161,12 @@ subtest 'gonin2' => sub {
 
     my $text = '沖縄の冲方丁' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'gonin2'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '沖[gonin2]（さんずい）縄の冲[gonin2]（にすい）方丁' x 2);
 };
 
@@ -175,12 +175,12 @@ subtest 'gonin3' => sub {
 
     my $text = '桂さんが柱壊した' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'gonin3'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '桂[gonin3]（かつら）さんが柱[gonin3]（はしら）壊した' x 2);
 };
 
@@ -189,12 +189,12 @@ subtest 'simplesp' => sub {
 
     my $text = '太宰 治　の小説' x 2;
 
-    my $checker1 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker1 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker1->check($text), $text);
 
     $opts{'simplesp'} = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '太宰_治□の小説' x 2);
 };
 
@@ -207,7 +207,7 @@ subtest 'simplesp, hansp & zensp' => sub {
     $opts{'hansp'}    = 1;
     $opts{'zensp'}    = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '太宰_治□の小説' x 2);
 };
 
@@ -220,40 +220,40 @@ subtest 'gaiji, 78hosetsu_tekiyo & hosetsu_tekiyo' => sub {
     $opts{'78hosetsu_tekiyo'} = 1;
     $opts{'hosetsu_tekiyo'}   = 1;
 
-    my $checker2 = AozoraBunko::Tools::Checkerkun->new(\%opts);
+    my $checker2 = AozoraBunko::Checkerkun->new(\%opts);
     is($checker2->check($text), '鷗[gaiji]※［＃「區＋鳥」、第3水準1-94-69］→[78hosetsu_tekiyo]【鴎】既[gaiji]※［＃「漑－さんずい」、第3水準1-85-11］→[hosetsu_tekiyo]【既】' x 1000);
 };
 
 subtest 'hash size' => sub {
-    is(scalar keys %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}, 29);
-    is(scalar keys %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_HOSETSU_TEKIYO},   104);
-    is(scalar keys %{$AozoraBunko::Tools::Checkerkun::JYOGAI},                    104);
-    is(scalar keys %{$AozoraBunko::Tools::Checkerkun::J78},                       29);
+    is(scalar keys %{$AozoraBunko::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}, 29);
+    is(scalar keys %{$AozoraBunko::Checkerkun::KUTENMEN_HOSETSU_TEKIYO},   104);
+    is(scalar keys %{$AozoraBunko::Checkerkun::JYOGAI},                    104);
+    is(scalar keys %{$AozoraBunko::Checkerkun::J78},                       29);
 };
 
 subtest 'hiden_no_tare has no gaiji' => sub {
     my @key_list = (
-        keys %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
-      , keys %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
-      , keys %{$AozoraBunko::Tools::Checkerkun::JYOGAI}
-      , keys %{$AozoraBunko::Tools::Checkerkun::J78}
-      , keys %{$AozoraBunko::Tools::Checkerkun::GONIN1}
-      , keys %{$AozoraBunko::Tools::Checkerkun::GONIN2}
-      , keys %{$AozoraBunko::Tools::Checkerkun::GONIN3}
-      , keys %{$AozoraBunko::Tools::Checkerkun::KYUJI}
-      , keys %{$AozoraBunko::Tools::Checkerkun::ITAIJI}
+        keys %{$AozoraBunko::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
+      , keys %{$AozoraBunko::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
+      , keys %{$AozoraBunko::Checkerkun::JYOGAI}
+      , keys %{$AozoraBunko::Checkerkun::J78}
+      , keys %{$AozoraBunko::Checkerkun::GONIN1}
+      , keys %{$AozoraBunko::Checkerkun::GONIN2}
+      , keys %{$AozoraBunko::Checkerkun::GONIN3}
+      , keys %{$AozoraBunko::Checkerkun::KYUJI}
+      , keys %{$AozoraBunko::Checkerkun::ITAIJI}
     );
 
     my @value_list = (
-          values %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
-        , values %{$AozoraBunko::Tools::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
-        , values %{$AozoraBunko::Tools::Checkerkun::JYOGAI}
-        , values %{$AozoraBunko::Tools::Checkerkun::J78}
-        , values %{$AozoraBunko::Tools::Checkerkun::GONIN1}
-        , values %{$AozoraBunko::Tools::Checkerkun::GONIN2}
-        , values %{$AozoraBunko::Tools::Checkerkun::GONIN3}
-        , values %{$AozoraBunko::Tools::Checkerkun::KYUJI}
-        , values %{$AozoraBunko::Tools::Checkerkun::ITAIJI}
+          values %{$AozoraBunko::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
+        , values %{$AozoraBunko::Checkerkun::KUTENMEN_78HOSETSU_TEKIYO}
+        , values %{$AozoraBunko::Checkerkun::JYOGAI}
+        , values %{$AozoraBunko::Checkerkun::J78}
+        , values %{$AozoraBunko::Checkerkun::GONIN1}
+        , values %{$AozoraBunko::Checkerkun::GONIN2}
+        , values %{$AozoraBunko::Checkerkun::GONIN3}
+        , values %{$AozoraBunko::Checkerkun::KYUJI}
+        , values %{$AozoraBunko::Checkerkun::ITAIJI}
     );
 
     my $enc = Encode::find_encoding("Shift_JIS");

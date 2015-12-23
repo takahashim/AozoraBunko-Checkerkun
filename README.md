@@ -94,6 +94,10 @@ new で指定したオプションでテキストをチェックします。戻�
 
 # SEE ALSO
 
+[Net::AozoraBunko](https://metacpan.org/pod/Net::AozoraBunko)
+
+[本ライブラリを用いた新しいチェッカー君](http://chobitool.com/checkerkun/)
+
 [青空文庫作業マニュアル【入力編】](http://www.aozora.gr.jp/aozora-manual/index-input.html)
 
 [チェッカー君](http://www.aozora.jp/tools/checker.cgi)

@@ -472,6 +472,10 @@ new で指定したオプションでテキストをチェックします。戻�
 
 =head1 SEE ALSO
 
+L<Net::AozoraBunko>
+
+L<本ライブラリを用いた新しいチェッカー君|http://chobitool.com/checkerkun/>
+
 L<青空文庫作業マニュアル【入力編】|http://www.aozora.gr.jp/aozora-manual/index-input.html>
 
 L<チェッカー君|http://www.aozora.jp/tools/checker.cgi>

@@ -2,6 +2,10 @@ Revision history for Perl extension AozoraBunko-Checkerkun
 
 {{$NEXT}}
 
+0.08 2015-12-23T14:42:25Z
+
+    - Improved documentation
+
 0.07 2015-12-13T08:56:06Z
 
     - Changed namespace from AozoraBunko::Tools::Checkerkun to AozoraBunko::Checkerkun

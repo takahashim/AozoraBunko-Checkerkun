@@ -14,7 +14,7 @@ use Lingua::JA::Halfwidth::Katakana;
 
 my $YAML_FILE = File::ShareDir::dist_file('AozoraBunko-Checkerkun', 'hiden_no_tare.yml');
 my $YAML = YAML::Tiny->read($YAML_FILE)->[0];
-my $ENC = Encode::find_encoding("Shift_JIS");
+my $ENC = Encode::find_encoding("CP932");
 
 my %VALID_OUTPUT_FORMAT;
 @VALID_OUTPUT_FORMAT{qw/plaintext html/} = ();
@@ -160,10 +160,14 @@ sub _check_all_hosetsu_tekiyo
 sub _is_gaiji
 {
     my $char = shift; # コピーしないと、encode のタイミングで元の文字が消失してしまう。
-
+    my $cp932char;
     # UTF-8からSJISに変換できなければ外字と判定
-    eval { $ENC->encode($char, Encode::FB_CROAK) };
+    eval { $cp932char = $ENC->encode($char, Encode::FB_CROAK) };
     return 1 if $@;
+    if ($cp932char !~ /[\x{20}-\x{7E}\x{8140}-\x{9FFC}\x{E040}-\x{FCFC}]/)
+    {
+        return 1;
+    }
     return 0;
 }
 
